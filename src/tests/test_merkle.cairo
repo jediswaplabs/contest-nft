@@ -67,6 +67,28 @@ fn setup_dispatcher(uri: Span<felt252>) -> ContractAddress {
 
 #[test]
 #[available_gas(20000000)]
+#[should_panic(expected: ('MERKLE_ROOT_NOT_SET', 'ENTRYPOINT_FAILED', ))]
+fn test_mint_whitelist_no_set_merkle_root() {
+    let caller = OWNER();
+    starknet::testing::set_contract_address(caller);
+    let mut jedi_contract_address = setup_dispatcher(URI());
+    let mut jedi_nft = IJediNFTDispatcher { contract_address: jedi_contract_address };
+    let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
+
+    assert(erc721.name() == 'Jedi NFT', 'name failed');
+    let task_id = 1_u128;
+    let mut proof = ArrayTrait::new();
+    proof.append(0x4992bea106fe44959bbbed1e326a2d96ec88f0fba38efe4b2d8a3e79c965c2e);
+    proof.append(0x4b5d5cbbfd24d8ba097e9e2c724501cd3a39b6ed3136b3dffa6de7e55c89dc9);
+    proof.append(0x2f5ba2761c55521b1141b05a0c21b5b80e2e9e592e9f042242e06fc0b2cb10b);
+    let token_id = 3_u128;
+    jedi_nft.mint_whitelist(task_id, token_id, proof);
+    assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
+    assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
+}
+
+#[test]
+#[available_gas(20000000)]
 fn test_mint_whitelist() {
     let caller = OWNER();
     starknet::testing::set_contract_address(caller);
@@ -85,6 +107,30 @@ fn test_mint_whitelist() {
     jedi_nft.mint_whitelist(task_id, token_id, proof);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
+}
+
+#[test]
+#[should_panic(expected: ('ALREADY_MINTED', 'ENTRYPOINT_FAILED', ))]
+#[available_gas(20000000)]
+fn test_mint_whitelist_already_mint() {
+    let caller = OWNER();
+    starknet::testing::set_contract_address(caller);
+    let mut jedi_contract_address = setup_dispatcher(URI());
+    let mut jedi_nft = IJediNFTDispatcher { contract_address: jedi_contract_address };
+    let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
+
+    assert(erc721.name() == 'Jedi NFT', 'name failed');
+    let task_id = 1_u128;
+    jedi_nft.set_merkle_root(task_id, 0x4debc46eee6fc815ece0273d8895ecaaaff3e6c062323042500fda4843b41d7);
+    let mut proof = ArrayTrait::new();
+    proof.append(0x4992bea106fe44959bbbed1e326a2d96ec88f0fba38efe4b2d8a3e79c965c2e);
+    proof.append(0x4b5d5cbbfd24d8ba097e9e2c724501cd3a39b6ed3136b3dffa6de7e55c89dc9);
+    proof.append(0x2f5ba2761c55521b1141b05a0c21b5b80e2e9e592e9f042242e06fc0b2cb10b);
+    let token_id = 3_u128;
+    jedi_nft.mint_whitelist(task_id, token_id, proof.clone());
+    assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
+    assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
+    jedi_nft.mint_whitelist(task_id, token_id, proof);
 }
 
 #[test]
