@@ -10,7 +10,7 @@ trait IJediNFT<TContractState> {
 
     fn contractURI(self: @TContractState) -> Span<felt252>;
 
-    fn is_minted(self: @TContractState, address: ContractAddress) -> bool;
+    fn is_completed(self: @TContractState, task_id: u128, address: ContractAddress) -> bool;
 
     fn set_merkle_root(ref self: TContractState, merkle_root: felt252);
 
@@ -20,9 +20,9 @@ trait IJediNFT<TContractState> {
 
     fn get_mint_sig_pub_key(self: @TContractState) -> felt252;
 
-    fn mint_sig(ref self: TContractState, token_id: u128, signature: Span<felt252>);
+    fn mint_sig(ref self: TContractState, task_id: u128, token_id: u128, signature: Span<felt252>);
 
-    fn mint_whitelist(ref self: TContractState, token_id: u128, proof: Array<felt252>);
+    fn mint_whitelist(ref self: TContractState, task_id: u128, token_id: u128, proof: Array<felt252>);
 }
 
 #[starknet::contract]
@@ -53,7 +53,7 @@ mod JediNFT {
 
     #[storage]
     struct Storage {
-        _is_minted: LegacyMap::<ContractAddress, bool>,
+        _completed_tasks: LegacyMap::<(u128, ContractAddress), bool>,
         _merkle_root: felt252,
         _uri: Span<felt252>,
         _contract_uri: Span<felt252>,
@@ -96,8 +96,8 @@ mod JediNFT {
             return self._contract_uri.read();
         }
 
-        fn is_minted(self: @ContractState, address: ContractAddress) -> bool {
-            return self._is_minted.read(address);
+        fn is_completed(self: @ContractState, task_id: u128, address: ContractAddress) -> bool {
+            return self._completed_tasks.read((task_id, address));
         }
 
         fn set_merkle_root(ref self: ContractState, merkle_root: felt252) {
@@ -109,18 +109,20 @@ mod JediNFT {
             return self._merkle_root.read();
         }
 
-        fn mint_whitelist(ref self: ContractState, token_id: u128, proof: Array<felt252>) {
+        fn mint_whitelist(ref self: ContractState, task_id: u128, token_id: u128, proof: Array<felt252>) {
             let caller = starknet::get_caller_address();
             let merkle_root = self._merkle_root.read();
             assert(merkle_root != 0, 'MERKLE_ROOT_NOT_SET');
-            let leaf = hash::pedersen(caller.into(), token_id.into());
+            let mut leaf = hash::pedersen(caller.into(), task_id.into());
+            leaf = hash::pedersen(leaf, token_id.into());
+
             let mut merkle_tree = MerkleTreeTrait::new();
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
             assert(result == true, 'verify failed');
 
-            let is_minted = self._is_minted.read(caller);
+            let is_minted = self._completed_tasks.read((task_id, caller));
             assert(!is_minted, 'ALREADY_MINTED');
-            self._is_minted.write(caller, true);
+            self._completed_tasks.write((task_id, caller), true);
             let mut erc721_self = ERC721::unsafe_new_contract_state();
             erc721_self._mint(to: caller, token_id: token_id.into());
         }
@@ -134,12 +136,12 @@ mod JediNFT {
             return self._mint_sig_public_key.read();
         }
 
-        fn mint_sig(ref self: ContractState, token_id: u128, signature: Span<felt252>) {
+        fn mint_sig(ref self: ContractState, task_id: u128, token_id: u128, signature: Span<felt252>) {
             let mint_sig_public_key = self._mint_sig_public_key.read();
             assert(mint_sig_public_key != 0, 'MINT_SIG_PUBLIC_KEY_NOT_SET');
             let caller = starknet::get_caller_address();
-            let token_id_ : felt252 = token_id.into();
-            let hashed = LegacyHash::hash(caller.into(), token_id_);
+            let mut hashed = LegacyHash::hash(caller.into(), task_id);
+            hashed = LegacyHash::hash(hashed, token_id);
             assert(signature.len() == 2_u32, 'INVALID_SIGNATURE_LENGTH');
             assert(
                 check_ecdsa_signature(
@@ -150,9 +152,9 @@ mod JediNFT {
                 ),
                 'INVALID_SIGNATURE',
             );
-            let is_minted = self._is_minted.read(caller);
+            let is_minted = self._completed_tasks.read((task_id, caller));
             assert(!is_minted, 'ALREADY_MINTED');
-            self._is_minted.write(caller, true);
+            self._completed_tasks.write((task_id, caller), true);
             let mut erc721_self = ERC721::unsafe_new_contract_state();
             erc721_self._mint(to: caller, token_id: token_id.into());
 
