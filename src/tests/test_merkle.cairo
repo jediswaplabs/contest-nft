@@ -75,14 +75,13 @@ fn test_mint_whitelist() {
     let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
-
-    jedi_nft.set_merkle_root(0x2cc70da46a7793ee8f2636530f4fe227c3cf9e5fee2ed54175f723e6cf07b5e);
-    let mut proof = ArrayTrait::new();
-    proof.append(0x36a29b52dd568cd5e7645abab0b94a7c7764f45337df23298d83400a6f69190);
-    proof.append(0x7014953627e12a84835ea684b2b3ca32fb1cda10adceba06a31f3f815ab2345);
-    proof.append(0x2f2cd6ff631a84274640bfbc4963ca713d6888b576effda1739aea2092ec2a8);
-    let token_id = 1_u128;
     let task_id = 1_u128;
+    jedi_nft.set_merkle_root(task_id, 0x4debc46eee6fc815ece0273d8895ecaaaff3e6c062323042500fda4843b41d7);
+    let mut proof = ArrayTrait::new();
+    proof.append(0x4992bea106fe44959bbbed1e326a2d96ec88f0fba38efe4b2d8a3e79c965c2e);
+    proof.append(0x4b5d5cbbfd24d8ba097e9e2c724501cd3a39b6ed3136b3dffa6de7e55c89dc9);
+    proof.append(0x2f5ba2761c55521b1141b05a0c21b5b80e2e9e592e9f042242e06fc0b2cb10b);
+    let token_id = 3_u128;
     jedi_nft.mint_whitelist(task_id, token_id, proof);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');

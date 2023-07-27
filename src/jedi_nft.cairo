@@ -12,9 +12,9 @@ trait IJediNFT<TContractState> {
 
     fn is_completed(self: @TContractState, task_id: u128, address: ContractAddress) -> bool;
 
-    fn set_merkle_root(ref self: TContractState, merkle_root: felt252);
+    fn set_merkle_root(ref self: TContractState, task_id: u128, merkle_root: felt252);
 
-    fn get_merkle_root(self: @TContractState) -> felt252;
+    fn get_merkle_root(self: @TContractState, task_id: u128) -> felt252;
 
     fn set_mint_sig_pub_key(ref self: TContractState, mint_sig_public_key: felt252);
 
@@ -54,7 +54,7 @@ mod JediNFT {
     #[storage]
     struct Storage {
         _completed_tasks: LegacyMap::<(u128, ContractAddress), bool>,
-        _merkle_root: felt252,
+        _merkle_roots: LegacyMap::<u128, felt252>,
         _uri: Span<felt252>,
         _contract_uri: Span<felt252>,
         _mint_sig_public_key: felt252,
@@ -100,21 +100,20 @@ mod JediNFT {
             return self._completed_tasks.read((task_id, address));
         }
 
-        fn set_merkle_root(ref self: ContractState, merkle_root: felt252) {
+        fn set_merkle_root(ref self: ContractState, task_id: u128, merkle_root: felt252) {
             self._only_owner();
-            self._merkle_root.write(merkle_root);
+            self._merkle_roots.write(task_id, merkle_root);
         }
 
-        fn get_merkle_root(self: @ContractState) -> felt252 {
-            return self._merkle_root.read();
+        fn get_merkle_root(self: @ContractState, task_id: u128) -> felt252 {
+            return self._merkle_roots.read(task_id);
         }
 
         fn mint_whitelist(ref self: ContractState, task_id: u128, token_id: u128, proof: Array<felt252>) {
             let caller = starknet::get_caller_address();
-            let merkle_root = self._merkle_root.read();
+            let merkle_root = self._merkle_roots.read(task_id);
             assert(merkle_root != 0, 'MERKLE_ROOT_NOT_SET');
-            let mut leaf = hash::pedersen(caller.into(), task_id.into());
-            leaf = hash::pedersen(leaf, token_id.into());
+            let mut leaf = hash::pedersen(caller.into(), token_id.into());
 
             let mut merkle_tree = MerkleTreeTrait::new();
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
