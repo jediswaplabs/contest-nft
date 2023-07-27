@@ -15,7 +15,7 @@ name = "jedinft"
 [dependencies]
 starknet = ">=2.0.0"
 alexandria = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
-rules_erc721 = { git = "https://github.com/ruleslabs/starknet-erc-721.git" }
+rules_erc721 = { git = "https://github.com/FelixGibson/starknet-erc721-rules.git", branch = "p/felix" }
 # rules_tokens = { git = "https://github.com/ruleslabs/core.git" }
 # kass = { git = "https://github.com/ruleslabs/kass.git" }
 
