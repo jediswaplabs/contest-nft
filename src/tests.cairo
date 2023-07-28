@@ -1,2 +1,2 @@
-mod test_merkle;
+mod test_jedi_nft;
 

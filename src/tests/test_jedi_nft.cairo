@@ -144,14 +144,12 @@ fn test_mint_sig() {
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
 
-    // jedi_nft.set_merkle_root(0x7c0dea5dd97a1f88cfb6aa0ab897b41b2f7864dbad24277e6e7b73c99d8e2f1);
-    // let mut proof = ArrayTrait::new();
-    // proof.append(0x758c3cabef0baa56cb2e133253576ada4ecc74257a9a26ef581c7b675d4dbc7);
-    // proof.append(0x5ae1153fec126641f138769c7e9c3942e5f05f0e80ba06462eb7135235c8997);
-    // proof.append(0x2f5ba2761c55521b1141b05a0c21b5b80e2e9e592e9f042242e06fc0b2cb10b);
-    // let token_id = 1_u128;
-    // let task_id = 1_u128;
-    // jedi_nft.mint_whitelist(task_id, token_id, proof);
-    // assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
-    // assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
+    jedi_nft.set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
+    let task_id = 1_u128;
+
+    let token_id = 1024_u128;
+    let mut sig = ArrayTrait::new();
+    sig.append(0x1a6c3b29d4b286e0fcda56ab4061aadf1ccf64337948ee97f10488ab82942ef);
+    sig.append(0x7ff0da732040f1cb3dc529952c5628a85c11c014d6932a9694cb902d5957e39);
+    jedi_nft.mint_sig(task_id, token_id, sig.span());
 }

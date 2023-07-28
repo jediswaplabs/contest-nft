@@ -113,7 +113,7 @@ mod JediNFT {
             let caller = starknet::get_caller_address();
             let merkle_root = self._merkle_roots.read(task_id);
             assert(merkle_root != 0, 'MERKLE_ROOT_NOT_SET');
-            let mut leaf = hash::pedersen(caller.into(), token_id.into());
+            let mut leaf = LegacyHash::hash(caller.into(), token_id);
 
             let mut merkle_tree = MerkleTreeTrait::new();
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
