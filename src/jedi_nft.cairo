@@ -60,6 +60,35 @@ mod JediNFT {
         _mint_sig_public_key: felt252,
     }
 
+  #[event]
+  #[derive(Drop, starknet::Event)]
+  enum Event {
+    Transfer: Transfer,
+    Approval: Approval,
+    ApprovalForAll: ApprovalForAll,
+  }
+
+  #[derive(Drop, starknet::Event)]
+  struct Transfer {
+    from_: starknet::ContractAddress,
+    to: starknet::ContractAddress,
+    tokenId: u256,
+  }
+
+  #[derive(Drop, starknet::Event)]
+  struct Approval {
+    owner: starknet::ContractAddress,
+    approved: starknet::ContractAddress,
+    token_id: u256,
+  }
+
+  #[derive(Drop, starknet::Event)]
+  struct ApprovalForAll {
+    owner: starknet::ContractAddress,
+    operator: starknet::ContractAddress,
+    approved: bool,
+  }
+
     //
     // Constructor
     //
@@ -101,6 +130,7 @@ mod JediNFT {
         }
 
         fn set_merkle_root(ref self: ContractState, task_id: u128, merkle_root: felt252) {
+            
             self._only_owner();
             self._merkle_roots.write(task_id, merkle_root);
         }
@@ -112,7 +142,7 @@ mod JediNFT {
         fn mint_whitelist(ref self: ContractState, task_id: u128, token_id: u128, proof: Array<felt252>) {
             let caller = starknet::get_caller_address();
             let merkle_root = self._merkle_roots.read(task_id);
-            assert(merkle_root != 0, 'MERKLE_ROOT_NOT_SET');
+            assert(merkle_root != 0, 'merkle root not set');
             let mut leaf = LegacyHash::hash(caller.into(), token_id);
 
             let mut merkle_tree = MerkleTreeTrait::new();

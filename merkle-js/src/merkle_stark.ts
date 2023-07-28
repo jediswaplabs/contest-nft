@@ -21,6 +21,6 @@ const tree = new merkle.MerkleTree(aimList);
 
 console.log(tree.root);
 
-console.log(tree.getProof(aimList[2]))
+console.log(tree.getProof(aimList[0]))
 
 // console.log(merkle.proofMerklePath(tree.root, '1', tree.getProof('1')))
