@@ -1,8 +1,21 @@
+use core::serde::Serde;
 use core::clone::Clone;
 use core::traits::TryInto;
-use starknet::ContractAddress;
 use array::ArrayTrait;
+use starknet::{
+    StorageAccess, ContractAddress
+};
 
+#[derive(Copy, Drop, Serde, PartialEq, storage_access::StorageAccess)]
+struct TokenMetadata {
+    task_id: u128,
+    name: felt252,
+    rank: u128,
+    score: u128,
+    percentile: u8,
+    level: u8,
+    total_eligable_users: u128,
+}
 
 #[starknet::interface]
 trait IJediNFT<TContractState> {
@@ -22,7 +35,9 @@ trait IJediNFT<TContractState> {
 
     fn mint_sig(ref self: TContractState, task_id: u128, token_id: u128, signature: Span<felt252>);
 
-    fn mint_whitelist(ref self: TContractState, task_id: u128, token_id: u128, proof: Array<felt252>);
+    fn mint_whitelist(ref self: TContractState, token_id: u256, proof: Array<felt252>, token_metadata: TokenMetadata);
+
+    fn get_token_metadata(self: @TContractState, token_id: u256) -> TokenMetadata;
 }
 
 #[starknet::contract]
@@ -50,6 +65,7 @@ mod JediNFT {
     use starknet::ContractAddress;
     use rules_utils::utils::storage::Felt252SpanStorageAccess;
     use alexandria::data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
+    use super::TokenMetadata;
 
     #[storage]
     struct Storage {
@@ -58,6 +74,8 @@ mod JediNFT {
         _uri: Span<felt252>,
         _contract_uri: Span<felt252>,
         _mint_sig_public_key: felt252,
+        // (token_id) -> (task_id, name, rank, score, percentile, level, total_eligable_users)
+        _token_metadata: LegacyMap::<u256, TokenMetadata>,
     }
 
   #[event]
@@ -139,21 +157,33 @@ mod JediNFT {
             return self._merkle_roots.read(task_id);
         }
 
-        fn mint_whitelist(ref self: ContractState, task_id: u128, token_id: u128, proof: Array<felt252>) {
+        fn mint_whitelist(ref self: ContractState, token_id: u256, proof: Array<felt252>, token_metadata: TokenMetadata) {
             let caller = starknet::get_caller_address();
-            let merkle_root = self._merkle_roots.read(task_id);
+            let merkle_root = self._merkle_roots.read(token_metadata.task_id);
             assert(merkle_root != 0, 'merkle root not set');
             let mut leaf = LegacyHash::hash(caller.into(), token_id);
+            leaf = LegacyHash::hash(leaf, token_metadata.task_id);
+            leaf = LegacyHash::hash(leaf, token_metadata.name);
+            leaf = LegacyHash::hash(leaf, token_metadata.rank);
+            leaf = LegacyHash::hash(leaf, token_metadata.score);
+            leaf = LegacyHash::hash(leaf, token_metadata.percentile);
+            leaf = LegacyHash::hash(leaf, token_metadata.level);
+            leaf = LegacyHash::hash(leaf, token_metadata.total_eligable_users);
 
             let mut merkle_tree = MerkleTreeTrait::new();
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
             assert(result == true, 'verify failed');
 
-            let is_minted = self._completed_tasks.read((task_id, caller));
+            self._token_metadata.write(token_id, token_metadata);
+            let is_minted = self._completed_tasks.read((token_metadata.task_id, caller));
             assert(!is_minted, 'ALREADY_MINTED');
-            self._completed_tasks.write((task_id, caller), true);
+            self._completed_tasks.write((token_metadata.task_id, caller), true);
             let mut erc721_self = ERC721::unsafe_new_contract_state();
             erc721_self._mint(to: caller, token_id: token_id.into());
+        }
+
+        fn get_token_metadata(self: @ContractState, token_id: u256) -> TokenMetadata {
+            return self._token_metadata.read(token_id);
         }
 
         fn set_mint_sig_pub_key(ref self: ContractState, mint_sig_public_key: felt252) {
