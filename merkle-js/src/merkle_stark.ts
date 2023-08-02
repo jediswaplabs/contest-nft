@@ -1,19 +1,38 @@
-import { merkle } from 'starknet';
+import { merkle, num,cairo } from 'starknet';
 import * as starkCurve from 'micro-starknet';
 
-// array of  [address, token_id]
-let list = [['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 1],
-['0x0161A9bCA8dCc5975A03b12f5F7bF9610e1541635eb40eB3A89bAeeDC168e636', 2],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 3],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5977', 4],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a597a', 5],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a597E', 6],
+// array of  [address, token_id, task_id, name, rank, score, percentile, level, total_eligable_users]
+let list = [['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 1, 1, 'L1P1', 10, 12000, 1, 6, 120000],
+['0x0161A9bCA8dCc5975A03b12f5F7bF9610e1541635eb40eB3A89bAeeDC168e636', 2, 1, 'L1P2', 20, 11000, 2, 6, 120000],
+['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 3, 1, 'L1P1', 320, 10000, 3, 6, 120000],
+['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5977', 4, 1, 'L1P1', 420, 9000, 4, 6, 120000],
+['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a597a', 5, 1, 'L1P1', 520, 8000, 5, 6, 120000],
+['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a597E', 6, 1, 'L1P1', 620, 7000, 6, 6, 120000],
 ];
 
 
 // convert to aim list, each item is hash of two elements
 let aimList = list.map(item => {
-    return starkCurve.pedersen(BigInt(item[0]),  BigInt(item[1]))
+    let tmp =  starkCurve.pedersen(BigInt(item[0]),  BigInt(item[1]))
+    console.log("tmp0: ", tmp)
+    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[2]))
+    console.log("tmp1: ", tmp)
+
+    tmp = starkCurve.pedersen(BigInt(tmp),  num.toHex(cairo.felt(item[3])))
+    console.log("cairo", num.toHex(cairo.felt(item[3])))
+    console.log("tmp2: ", tmp)
+    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[4]))
+    console.log("tmp3: ", tmp)
+    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[5]))
+    console.log("tmp4: ", tmp)
+    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[6]))
+    console.log("tmp5: ", tmp)
+    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[7]))
+    console.log("tmp6: ", tmp)
+    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[8]))
+    console.log("tmp7: ", tmp)
+
+    return tmp;
 })
 // print aimList
 console.log("aimList: ", aimList)
