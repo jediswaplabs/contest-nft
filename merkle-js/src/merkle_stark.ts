@@ -14,28 +14,16 @@ let list = [['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974
 // convert to aim list, each item is hash of two elements
 let aimList = list.map(item => {
     let tmp =  starkCurve.pedersen(BigInt(item[0]),  BigInt(item[1]))
-    console.log("tmp0: ", tmp)
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[2]))
-    console.log("tmp1: ", tmp)
-
     tmp = starkCurve.pedersen(BigInt(tmp),  num.toHex(cairo.felt(item[3])))
-    console.log("cairo", num.toHex(cairo.felt(item[3])))
-    console.log("tmp2: ", tmp)
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[4]))
-    console.log("tmp3: ", tmp)
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[5]))
-    console.log("tmp4: ", tmp)
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[6]))
-    console.log("tmp5: ", tmp)
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[7]))
-    console.log("tmp6: ", tmp)
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[8]))
-    console.log("tmp7: ", tmp)
 
     return tmp;
 })
-// print aimList
-console.log("aimList: ", aimList)
 const tree = new merkle.MerkleTree(aimList);
 
 console.log(tree.root);
