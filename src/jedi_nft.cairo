@@ -207,8 +207,6 @@ mod JediNFT {
             hashed = LegacyHash::hash(hashed, token_metadata.percentile);
             hashed = LegacyHash::hash(hashed, token_metadata.level);
             hashed = LegacyHash::hash(hashed, token_metadata.total_eligable_users);
-
-            hashed = LegacyHash::hash(hashed, token_id);
             assert(signature.len() == 2_u32, 'INVALID_SIGNATURE_LENGTH');
             assert(
                 check_ecdsa_signature(
