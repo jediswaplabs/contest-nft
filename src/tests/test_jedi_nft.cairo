@@ -213,3 +213,78 @@ fn test_mint_sig() {
     sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
     jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
 }
+
+#[test]
+#[should_panic(expected: ('ALREADY_MINTED', 'ENTRYPOINT_FAILED', ))]
+#[available_gas(20000000)]
+fn test_mint_sig_already_mint() {
+    let caller = OWNER();
+    starknet::testing::set_contract_address(caller);
+    let mut jedi_contract_address = setup_dispatcher(URI());
+    let mut jedi_nft = IJediNFTDispatcher { contract_address: jedi_contract_address };
+    let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
+
+    assert(erc721.name() == 'Jedi NFT', 'name failed');
+
+    jedi_nft.set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
+    let token_id = 1_u128;
+    let task_id = 1_u128;
+    let name = 'L1P1';
+    let rank = 10;
+    let score = 12000;
+    let percentile = 1;
+    let level = 6;
+    let total_eligable_users = 120000;
+    let token_metadata = TokenMetadata {
+        task_id: task_id,
+        name: name,
+        rank: rank,
+        score: score,
+        percentile: percentile,
+        level: level,
+        total_eligable_users: total_eligable_users,
+    };
+    
+    let mut sig = ArrayTrait::new();
+    sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
+    sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
+    jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
+
+    jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
+}
+
+#[test]
+#[should_panic(expected: ('MINT_SIG_PUBLIC_KEY_NOT_SET', 'ENTRYPOINT_FAILED', ))]
+#[available_gas(20000000)]
+fn test_mint_sig_not_set_pubkey() {
+    let caller = OWNER();
+    starknet::testing::set_contract_address(caller);
+    let mut jedi_contract_address = setup_dispatcher(URI());
+    let mut jedi_nft = IJediNFTDispatcher { contract_address: jedi_contract_address };
+    let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
+
+    assert(erc721.name() == 'Jedi NFT', 'name failed');
+
+    let token_id = 1_u128;
+    let task_id = 1_u128;
+    let name = 'L1P1';
+    let rank = 10;
+    let score = 12000;
+    let percentile = 1;
+    let level = 6;
+    let total_eligable_users = 120000;
+    let token_metadata = TokenMetadata {
+        task_id: task_id,
+        name: name,
+        rank: rank,
+        score: score,
+        percentile: percentile,
+        level: level,
+        total_eligable_users: total_eligable_users,
+    };
+    
+    let mut sig = ArrayTrait::new();
+    sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
+    sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
+    jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
+}
