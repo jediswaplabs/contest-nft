@@ -14,7 +14,7 @@ struct TokenMetadata {
     score: u128,
     percentile: u8,
     level: u8,
-    total_eligable_users: u128,
+    total_eligible_users: u128,
 }
 
 #[starknet::interface]
@@ -74,7 +74,7 @@ mod JediNFT {
         _uri: Span<felt252>,
         _contract_uri: Span<felt252>,
         _mint_sig_public_key: felt252,
-        // (token_id) -> (task_id, name, rank, score, percentile, level, total_eligable_users)
+        // (token_id) -> (task_id, name, rank, score, percentile, level, total_eligible_users)
         _token_metadata: LegacyMap::<u128, TokenMetadata>,
     }
 
@@ -168,7 +168,7 @@ mod JediNFT {
             leaf = LegacyHash::hash(leaf, token_metadata.score);
             leaf = LegacyHash::hash(leaf, token_metadata.percentile);
             leaf = LegacyHash::hash(leaf, token_metadata.level);
-            leaf = LegacyHash::hash(leaf, token_metadata.total_eligable_users);
+            leaf = LegacyHash::hash(leaf, token_metadata.total_eligible_users);
 
             let mut merkle_tree = MerkleTreeTrait::new();
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
@@ -206,7 +206,7 @@ mod JediNFT {
             hashed = LegacyHash::hash(hashed, token_metadata.score);
             hashed = LegacyHash::hash(hashed, token_metadata.percentile);
             hashed = LegacyHash::hash(hashed, token_metadata.level);
-            hashed = LegacyHash::hash(hashed, token_metadata.total_eligable_users);
+            hashed = LegacyHash::hash(hashed, token_metadata.total_eligible_users);
             assert(signature.len() == 2_u32, 'INVALID_SIGNATURE_LENGTH');
             assert(
                 check_ecdsa_signature(

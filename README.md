@@ -1,6 +1,8 @@
 # contest-nft
 
 
+Greatly powered by [ruleslab's code](https://github.com/ruleslabs/starknet-erc721.git)
+
 # Deploy
 
 ## Declare

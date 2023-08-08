@@ -83,7 +83,7 @@ fn test_mint_whitelist_no_set_merkle_root() {
     let score = 12000;
     let percentile = 1;
     let level = 6;
-    let total_eligable_users = 120000;
+    let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -91,7 +91,7 @@ fn test_mint_whitelist_no_set_merkle_root() {
         score: score,
         percentile: percentile,
         level: level,
-        total_eligable_users: total_eligable_users,
+        total_eligible_users: total_eligible_users,
     };
     let mut proof = ArrayTrait::new();
     proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
@@ -119,7 +119,7 @@ fn test_mint_whitelist() {
     let score = 12000;
     let percentile = 1;
     let level = 6;
-    let total_eligable_users = 120000;
+    let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -127,7 +127,7 @@ fn test_mint_whitelist() {
         score: score,
         percentile: percentile,
         level: level,
-        total_eligable_users: total_eligable_users,
+        total_eligible_users: total_eligible_users,
     };
     jedi_nft.set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
     let mut proof = ArrayTrait::new();
@@ -157,7 +157,7 @@ fn test_mint_whitelist_already_mint() {
     let score = 12000;
     let percentile = 1;
     let level = 6;
-    let total_eligable_users = 120000;
+    let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -165,7 +165,7 @@ fn test_mint_whitelist_already_mint() {
         score: score,
         percentile: percentile,
         level: level,
-        total_eligable_users: total_eligable_users,
+        total_eligible_users: total_eligible_users,
     };
     jedi_nft.set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
     let mut proof = ArrayTrait::new();
@@ -197,7 +197,7 @@ fn test_mint_sig() {
     let score = 12000;
     let percentile = 1;
     let level = 6;
-    let total_eligable_users = 120000;
+    let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -205,7 +205,7 @@ fn test_mint_sig() {
         score: score,
         percentile: percentile,
         level: level,
-        total_eligable_users: total_eligable_users,
+        total_eligible_users: total_eligible_users,
     };
     
     let mut sig = ArrayTrait::new();
@@ -234,7 +234,7 @@ fn test_mint_sig_already_mint() {
     let score = 12000;
     let percentile = 1;
     let level = 6;
-    let total_eligable_users = 120000;
+    let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -242,7 +242,7 @@ fn test_mint_sig_already_mint() {
         score: score,
         percentile: percentile,
         level: level,
-        total_eligable_users: total_eligable_users,
+        total_eligible_users: total_eligible_users,
     };
     
     let mut sig = ArrayTrait::new();
@@ -272,7 +272,7 @@ fn test_mint_sig_not_set_pubkey() {
     let score = 12000;
     let percentile = 1;
     let level = 6;
-    let total_eligable_users = 120000;
+    let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -280,7 +280,7 @@ fn test_mint_sig_not_set_pubkey() {
         score: score,
         percentile: percentile,
         level: level,
-        total_eligable_users: total_eligable_users,
+        total_eligible_users: total_eligible_users,
     };
     
     let mut sig = ArrayTrait::new();
