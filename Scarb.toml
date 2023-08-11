@@ -1,23 +1,15 @@
 [package]
 name = "jedinft"
-version = "0.1.0"
-description = "A minimal template for developing with Cairo 1.0"
-homepage = "https://github.com/auditless/cairo-template"
-
-
-[lib]
-name = "jedinft"
+version = "1.0.0"
+description = "NFT Contract For LP Contest"
+# homepage = "https://github.com/auditless/cairo-template"
 
 [scripts]
-# test = "protostar test"
-# Add your own custom commands and run them with `scarb run <command>`
 
 [dependencies]
 starknet = ">=2.0.0"
 alexandria = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
 rules_erc721 = { git = "https://github.com/FelixGibson/starknet-erc721-rules.git", branch = "p/felix" }
-# rules_tokens = { git = "https://github.com/ruleslabs/core.git" }
-# kass = { git = "https://github.com/ruleslabs/kass.git" }
 
 [[target.starknet-contract]]
 sierra = true
