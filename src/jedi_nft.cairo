@@ -3,10 +3,10 @@ use core::clone::Clone;
 use core::traits::TryInto;
 use array::ArrayTrait;
 use starknet::{
-    StorageAccess, ContractAddress
+    Store, ContractAddress
 };
 
-#[derive(Copy, Drop, Serde, PartialEq, storage_access::StorageAccess)]
+#[derive(Copy, Drop, Serde, PartialEq, starknet::Store)]
 struct TokenMetadata {
     task_id: u128,
     name: felt252,
@@ -63,8 +63,8 @@ mod JediNFT {
         ModifierTrait as OwnableModifierTrait, InternalTrait as OwnableInternalTrait,
     };
     use starknet::ContractAddress;
-    use rules_utils::utils::storage::Felt252SpanStorageAccess;
-    use alexandria::data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
+    use alexandria_data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
+    use rules_utils::utils::storage::StoreSpanFelt252;
     use super::TokenMetadata;
 
     #[storage]

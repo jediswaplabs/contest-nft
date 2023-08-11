@@ -16,7 +16,7 @@ use traits::TryInto;
 
 use jedinft::jedi_nft::{IJediNFT, IJediNFTDispatcher, JediNFT, TokenMetadata};
 use rules_erc721::erc721::erc721::{ERC721ABI, ERC721ABIDispatcher, ERC721ABIDispatcherTrait};
-use alexandria::data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
+use alexandria_data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
 use hash::LegacyHash;
 
 

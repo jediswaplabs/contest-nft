@@ -6,10 +6,17 @@ description = "NFT Contract For LP Contest"
 
 [scripts]
 
+[workspace]
+members = ["alexandria_data_structures"]
+
+[workspace.dependencies]
+alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
+
+
 [dependencies]
-starknet = ">=2.0.0"
-alexandria = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
-rules_erc721 = { git = "https://github.com/FelixGibson/starknet-erc721-rules.git", branch = "p/felix" }
+starknet = ">=2.1.0"
+alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
+rules_erc721 = { git = "https://github.com/ruleslabs/starknet-erc721.git" }
 
 [[target.starknet-contract]]
 sierra = true
