@@ -129,7 +129,8 @@ fn test_mint_whitelist() {
         level: level,
         total_eligible_users: total_eligible_users,
     };
-    jedi_nft.set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
+    jedi_nft
+        .set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
     let mut proof = ArrayTrait::new();
     proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
     proof.append(0x63edeac7f0773edfa49f70380c79c18c72fc065a398b813c4c658812c16b3c6);
@@ -167,7 +168,8 @@ fn test_mint_whitelist_already_mint() {
         level: level,
         total_eligible_users: total_eligible_users,
     };
-    jedi_nft.set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
+    jedi_nft
+        .set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
     let mut proof = ArrayTrait::new();
     proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
     proof.append(0x63edeac7f0773edfa49f70380c79c18c72fc065a398b813c4c658812c16b3c6);
@@ -189,7 +191,8 @@ fn test_mint_sig() {
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
 
-    jedi_nft.set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
+    jedi_nft
+        .set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
     let token_id = 1_u128;
     let task_id = 1_u128;
     let name = 'L1P1';
@@ -207,7 +210,7 @@ fn test_mint_sig() {
         level: level,
         total_eligible_users: total_eligible_users,
     };
-    
+
     let mut sig = ArrayTrait::new();
     sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
     sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
@@ -226,7 +229,8 @@ fn test_mint_sig_already_mint() {
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
 
-    jedi_nft.set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
+    jedi_nft
+        .set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
     let token_id = 1_u128;
     let task_id = 1_u128;
     let name = 'L1P1';
@@ -244,7 +248,7 @@ fn test_mint_sig_already_mint() {
         level: level,
         total_eligible_users: total_eligible_users,
     };
-    
+
     let mut sig = ArrayTrait::new();
     sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
     sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
@@ -282,7 +286,7 @@ fn test_mint_sig_not_set_pubkey() {
         level: level,
         total_eligible_users: total_eligible_users,
     };
-    
+
     let mut sig = ArrayTrait::new();
     sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
     sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);

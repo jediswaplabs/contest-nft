@@ -1,10 +1,7 @@
-use core::serde::Serde;
 use core::clone::Clone;
 use core::traits::TryInto;
 use array::ArrayTrait;
-use starknet::{
-    Store, ContractAddress
-};
+use starknet::{Store, ContractAddress};
 
 #[derive(Copy, Drop, Serde, PartialEq, starknet::Store)]
 struct TokenMetadata {
@@ -33,9 +30,19 @@ trait IJediNFT<TContractState> {
 
     fn get_mint_sig_pub_key(self: @TContractState) -> felt252;
 
-    fn mint_sig(ref self: TContractState, token_id: u128, signature: Span<felt252>, token_metadata: TokenMetadata);
+    fn mint_sig(
+        ref self: TContractState,
+        token_id: u128,
+        signature: Span<felt252>,
+        token_metadata: TokenMetadata
+    );
 
-    fn mint_whitelist(ref self: TContractState, token_id: u128, proof: Array<felt252>, token_metadata: TokenMetadata);
+    fn mint_whitelist(
+        ref self: TContractState,
+        token_id: u128,
+        proof: Array<felt252>,
+        token_metadata: TokenMetadata
+    );
 
     fn get_token_metadata(self: @TContractState, token_id: u128) -> TokenMetadata;
 }
@@ -63,6 +70,7 @@ mod JediNFT {
         ModifierTrait as OwnableModifierTrait, InternalTrait as OwnableInternalTrait,
     };
     use starknet::ContractAddress;
+    use starknet::get_caller_address;
     use alexandria_data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
     use rules_utils::utils::storage::StoreSpanFelt252;
     use super::TokenMetadata;
@@ -78,34 +86,34 @@ mod JediNFT {
         _token_metadata: LegacyMap::<u128, TokenMetadata>,
     }
 
-  #[event]
-  #[derive(Drop, starknet::Event)]
-  enum Event {
-    Transfer: Transfer,
-    Approval: Approval,
-    ApprovalForAll: ApprovalForAll,
-  }
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        Transfer: Transfer,
+        Approval: Approval,
+        ApprovalForAll: ApprovalForAll,
+    }
 
-  #[derive(Drop, starknet::Event)]
-  struct Transfer {
-    from_: starknet::ContractAddress,
-    to: starknet::ContractAddress,
-    tokenId: u256,
-  }
+    #[derive(Drop, starknet::Event)]
+    struct Transfer {
+        from_: ContractAddress,
+        to: ContractAddress,
+        tokenId: u256,
+    }
 
-  #[derive(Drop, starknet::Event)]
-  struct Approval {
-    owner: starknet::ContractAddress,
-    approved: starknet::ContractAddress,
-    token_id: u256,
-  }
+    #[derive(Drop, starknet::Event)]
+    struct Approval {
+        owner: ContractAddress,
+        approved: ContractAddress,
+        token_id: u256,
+    }
 
-  #[derive(Drop, starknet::Event)]
-  struct ApprovalForAll {
-    owner: starknet::ContractAddress,
-    operator: starknet::ContractAddress,
-    approved: bool,
-  }
+    #[derive(Drop, starknet::Event)]
+    struct ApprovalForAll {
+        owner: ContractAddress,
+        operator: ContractAddress,
+        approved: bool,
+    }
 
     //
     // Constructor
@@ -118,7 +126,7 @@ mod JediNFT {
         symbol_: felt252,
         uri_: Span<felt252>,
         contract_uri: Span<felt252>,
-        owner_: starknet::ContractAddress,
+        owner_: ContractAddress,
     ) {
         self._uri.write(uri_);
         let mut erc721_self = ERC721::unsafe_new_contract_state();
@@ -148,7 +156,6 @@ mod JediNFT {
         }
 
         fn set_merkle_root(ref self: ContractState, task_id: u128, merkle_root: felt252) {
-            
             self._only_owner();
             self._merkle_roots.write(task_id, merkle_root);
         }
@@ -157,8 +164,13 @@ mod JediNFT {
             return self._merkle_roots.read(task_id);
         }
 
-        fn mint_whitelist(ref self: ContractState, token_id: u128, proof: Array<felt252>, token_metadata: TokenMetadata) {
-            let caller = starknet::get_caller_address();
+        fn mint_whitelist(
+            ref self: ContractState,
+            token_id: u128,
+            proof: Array<felt252>,
+            token_metadata: TokenMetadata
+        ) {
+            let caller = get_caller_address();
             let merkle_root = self._merkle_roots.read(token_metadata.task_id);
             assert(merkle_root != 0, 'merkle root not set');
             let mut leaf: felt252 = LegacyHash::hash(caller.into(), token_id);
@@ -195,10 +207,15 @@ mod JediNFT {
             return self._mint_sig_public_key.read();
         }
 
-        fn mint_sig(ref self: ContractState, token_id: u128, signature: Span<felt252>, token_metadata: TokenMetadata) {
+        fn mint_sig(
+            ref self: ContractState,
+            token_id: u128,
+            signature: Span<felt252>,
+            token_metadata: TokenMetadata
+        ) {
             let mint_sig_public_key = self._mint_sig_public_key.read();
             assert(mint_sig_public_key != 0, 'MINT_SIG_PUBLIC_KEY_NOT_SET');
-            let caller = starknet::get_caller_address();
+            let caller = get_caller_address();
             let mut hashed = LegacyHash::hash(caller.into(), token_id);
             hashed = LegacyHash::hash(hashed, token_metadata.task_id);
             hashed = LegacyHash::hash(hashed, token_metadata.name);
@@ -222,7 +239,6 @@ mod JediNFT {
             self._completed_tasks.write((token_metadata.task_id, caller), true);
             let mut erc721_self = ERC721::unsafe_new_contract_state();
             erc721_self._mint(to: caller, token_id: token_id.into());
-
         }
     }
 
@@ -233,45 +249,40 @@ mod JediNFT {
 
     #[external(v0)]
     impl IERC721Impl of IERC721<ContractState> {
-        fn balance_of(self: @ContractState, account: starknet::ContractAddress) -> u256 {
+        fn balance_of(self: @ContractState, account: ContractAddress) -> u256 {
             let erc721_self = ERC721::unsafe_new_contract_state();
 
             erc721_self.balance_of(:account)
         }
 
-        fn owner_of(self: @ContractState, token_id: u256) -> starknet::ContractAddress {
+        fn owner_of(self: @ContractState, token_id: u256) -> ContractAddress {
             let erc721_self = ERC721::unsafe_new_contract_state();
 
             erc721_self.owner_of(:token_id)
         }
 
-        fn get_approved(self: @ContractState, token_id: u256) -> starknet::ContractAddress {
+        fn get_approved(self: @ContractState, token_id: u256) -> ContractAddress {
             let erc721_self = ERC721::unsafe_new_contract_state();
 
             erc721_self.get_approved(:token_id)
         }
 
         fn is_approved_for_all(
-            self: @ContractState,
-            owner: starknet::ContractAddress,
-            operator: starknet::ContractAddress
+            self: @ContractState, owner: ContractAddress, operator: ContractAddress
         ) -> bool {
             let erc721_self = ERC721::unsafe_new_contract_state();
 
             erc721_self.is_approved_for_all(:owner, :operator)
         }
 
-        fn approve(ref self: ContractState, to: starknet::ContractAddress, token_id: u256) {
+        fn approve(ref self: ContractState, to: ContractAddress, token_id: u256) {
             let mut erc721_self = ERC721::unsafe_new_contract_state();
 
             erc721_self.approve(:to, :token_id);
         }
 
         fn transfer_from(
-            ref self: ContractState,
-            from: starknet::ContractAddress,
-            to: starknet::ContractAddress,
-            token_id: u256
+            ref self: ContractState, from: ContractAddress, to: ContractAddress, token_id: u256
         ) {
             let mut erc721_self = ERC721::unsafe_new_contract_state();
 
@@ -280,8 +291,8 @@ mod JediNFT {
 
         fn safe_transfer_from(
             ref self: ContractState,
-            from: starknet::ContractAddress,
-            to: starknet::ContractAddress,
+            from: ContractAddress,
+            to: ContractAddress,
             token_id: u256,
             data: Span<felt252>
         ) {
@@ -291,7 +302,7 @@ mod JediNFT {
         }
 
         fn set_approval_for_all(
-            ref self: ContractState, operator: starknet::ContractAddress, approved: bool
+            ref self: ContractState, operator: ContractAddress, approved: bool
         ) {
             let mut erc721_self = ERC721::unsafe_new_contract_state();
 
@@ -337,48 +348,41 @@ mod JediNFT {
 
     #[external(v0)]
     impl JediERC721CamelImpl of IERC721CamelOnly<ContractState> {
-        fn balanceOf(self: @ContractState, account: starknet::ContractAddress) -> u256 {
+        fn balanceOf(self: @ContractState, account: ContractAddress) -> u256 {
             IERC721::balance_of(self, account: account)
         }
 
-        fn ownerOf(self: @ContractState, tokenId: u256) -> starknet::ContractAddress {
+        fn ownerOf(self: @ContractState, tokenId: u256) -> ContractAddress {
             IERC721::owner_of(self, token_id: tokenId)
         }
 
-        fn getApproved(self: @ContractState, tokenId: u256) -> starknet::ContractAddress {
+        fn getApproved(self: @ContractState, tokenId: u256) -> ContractAddress {
             IERC721::get_approved(self, token_id: tokenId)
         }
 
         fn isApprovedForAll(
-            self: @ContractState,
-            owner: starknet::ContractAddress,
-            operator: starknet::ContractAddress
+            self: @ContractState, owner: ContractAddress, operator: ContractAddress
         ) -> bool {
             IERC721::is_approved_for_all(self, owner: owner, operator: operator)
         }
 
         fn transferFrom(
-            ref self: ContractState,
-            from: starknet::ContractAddress,
-            to: starknet::ContractAddress,
-            tokenId: u256
+            ref self: ContractState, from: ContractAddress, to: ContractAddress, tokenId: u256
         ) {
             IERC721::transfer_from(ref self, :from, :to, token_id: tokenId);
         }
 
         fn safeTransferFrom(
             ref self: ContractState,
-            from: starknet::ContractAddress,
-            to: starknet::ContractAddress,
+            from: ContractAddress,
+            to: ContractAddress,
             tokenId: u256,
             data: Span<felt252>
         ) {
             IERC721::safe_transfer_from(ref self, :from, :to, token_id: tokenId, :data);
         }
 
-        fn setApprovalForAll(
-            ref self: ContractState, operator: starknet::ContractAddress, approved: bool
-        ) {
+        fn setApprovalForAll(ref self: ContractState, operator: ContractAddress, approved: bool) {
             IERC721::set_approval_for_all(ref self, :operator, :approved);
         }
     }
@@ -419,13 +423,13 @@ mod JediNFT {
 
     #[external(v0)]
     impl IOwnableImpl of IOwnable<ContractState> {
-        fn owner(self: @ContractState) -> starknet::ContractAddress {
+        fn owner(self: @ContractState) -> ContractAddress {
             let ownable_self = Ownable::unsafe_new_contract_state();
 
             ownable_self.owner()
         }
 
-        fn transfer_ownership(ref self: ContractState, new_owner: starknet::ContractAddress) {
+        fn transfer_ownership(ref self: ContractState, new_owner: ContractAddress) {
             let mut ownable_self = Ownable::unsafe_new_contract_state();
 
             ownable_self.transfer_ownership(:new_owner);
