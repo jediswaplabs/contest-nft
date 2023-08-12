@@ -81,7 +81,6 @@ fn test_mint_whitelist_no_set_merkle_root() {
     let name = 'L1P1';
     let rank = 10;
     let score = 12000;
-    let percentile = 1;
     let level = 6;
     let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
@@ -89,14 +88,13 @@ fn test_mint_whitelist_no_set_merkle_root() {
         name: name,
         rank: rank,
         score: score,
-        percentile: percentile,
         level: level,
         total_eligible_users: total_eligible_users,
     };
     let mut proof = ArrayTrait::new();
-    proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
-    proof.append(0x63edeac7f0773edfa49f70380c79c18c72fc065a398b813c4c658812c16b3c6);
-    proof.append(0x2df262d0827ea289ff0ae82047e8c99bc35d7e3deb383b8b28bae51f38efec3);
+    proof.append(0x620d10f8d919582737f7adbf5458f33e3984f1036bf12f26df45b0b7a6de008);
+    proof.append(0xbd3de79dffabeaa861d6f52c917693f5673041df2004b245ace343a5c2cfb);
+    proof.append(0x5d32dd94548b77404420815161d866380fcdac237adea94f114dadb3e793b7d);
     jedi_nft.mint_whitelist(token_id.into(), proof, token_metadata);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
@@ -117,7 +115,6 @@ fn test_mint_whitelist() {
     let name = 'L1P1';
     let rank = 10;
     let score = 12000;
-    let percentile = 1;
     let level = 6;
     let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
@@ -125,16 +122,15 @@ fn test_mint_whitelist() {
         name: name,
         rank: rank,
         score: score,
-        percentile: percentile,
         level: level,
         total_eligible_users: total_eligible_users,
     };
     jedi_nft
-        .set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
+        .set_merkle_root(task_id, 0x3c56807fbf1611f214a1693ee0de0d40134a4cc0eea9440eb9216d49fbb13e9);
     let mut proof = ArrayTrait::new();
-    proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
-    proof.append(0x63edeac7f0773edfa49f70380c79c18c72fc065a398b813c4c658812c16b3c6);
-    proof.append(0x2df262d0827ea289ff0ae82047e8c99bc35d7e3deb383b8b28bae51f38efec3);
+    proof.append(0x620d10f8d919582737f7adbf5458f33e3984f1036bf12f26df45b0b7a6de008);
+    proof.append(0xbd3de79dffabeaa861d6f52c917693f5673041df2004b245ace343a5c2cfb);
+    proof.append(0x5d32dd94548b77404420815161d866380fcdac237adea94f114dadb3e793b7d);
     jedi_nft.mint_whitelist(token_id.into(), proof, token_metadata);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
@@ -156,7 +152,6 @@ fn test_mint_whitelist_already_mint() {
     let name = 'L1P1';
     let rank = 10;
     let score = 12000;
-    let percentile = 1;
     let level = 6;
     let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
@@ -164,12 +159,11 @@ fn test_mint_whitelist_already_mint() {
         name: name,
         rank: rank,
         score: score,
-        percentile: percentile,
         level: level,
         total_eligible_users: total_eligible_users,
     };
     jedi_nft
-        .set_merkle_root(task_id, 0x1b1e0c3f4a87d1c6829cd8dfce486a42e6cfcaf119f8eaf2aa3e34cb646a5a);
+        .set_merkle_root(task_id, 0x3c56807fbf1611f214a1693ee0de0d40134a4cc0eea9440eb9216d49fbb13e9);
     let mut proof = ArrayTrait::new();
     proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
     proof.append(0x63edeac7f0773edfa49f70380c79c18c72fc065a398b813c4c658812c16b3c6);
@@ -198,7 +192,6 @@ fn test_mint_sig() {
     let name = 'L1P1';
     let rank = 10;
     let score = 12000;
-    let percentile = 1;
     let level = 6;
     let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
@@ -206,7 +199,6 @@ fn test_mint_sig() {
         name: name,
         rank: rank,
         score: score,
-        percentile: percentile,
         level: level,
         total_eligible_users: total_eligible_users,
     };
@@ -236,7 +228,6 @@ fn test_mint_sig_already_mint() {
     let name = 'L1P1';
     let rank = 10;
     let score = 12000;
-    let percentile = 1;
     let level = 6;
     let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
@@ -244,7 +235,6 @@ fn test_mint_sig_already_mint() {
         name: name,
         rank: rank,
         score: score,
-        percentile: percentile,
         level: level,
         total_eligible_users: total_eligible_users,
     };
@@ -274,7 +264,6 @@ fn test_mint_sig_not_set_pubkey() {
     let name = 'L1P1';
     let rank = 10;
     let score = 12000;
-    let percentile = 1;
     let level = 6;
     let total_eligible_users = 120000;
     let token_metadata = TokenMetadata {
@@ -282,7 +271,6 @@ fn test_mint_sig_not_set_pubkey() {
         name: name,
         rank: rank,
         score: score,
-        percentile: percentile,
         level: level,
         total_eligible_users: total_eligible_users,
     };

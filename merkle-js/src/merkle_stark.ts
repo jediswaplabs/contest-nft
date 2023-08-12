@@ -1,15 +1,10 @@
 import { merkle, num,cairo } from 'starknet';
 import * as starkCurve from 'micro-starknet';
+import * as fs from 'fs';
 
-// array of  [address, token_id, task_id, name, rank, score, percentile, level, total_eligible_users]
-let list = [['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 1, 1, 'L1P1', 10, 12000, 1, 6, 120000],
-['0x02b9cE3e6869192006820c2B41c084BAB97f17DAe966b981dCA2FDae1C178065', 2, 1, 'L1P2', 20, 11000, 2, 6, 120000],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 3, 1, 'L1P1', 320, 10000, 3, 6, 120000],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5977', 4, 1, 'L1P1', 420, 9000, 4, 6, 120000],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a597a', 5, 1, 'L1P1', 520, 8000, 5, 6, 120000],
-['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a597E', 6, 1, 'L1P1', 620, 7000, 6, 6, 120000],
-];
-
+// read data from .csv file
+// array of  [address, token_id, task_id, name, rank, score, level, total_eligible_users]
+let list = fs.readFileSync('/home/felix/Downloads/median/output10.csv', 'utf8').split('\n').map(item => item.split(','));
 
 // convert to aim list, each item is hash of two elements
 let aimList = list.map(item => {
@@ -20,7 +15,6 @@ let aimList = list.map(item => {
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[5]))
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[6]))
     tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[7]))
-    tmp = starkCurve.pedersen(BigInt(tmp),  BigInt(item[8]))
 
     return tmp;
 })
@@ -28,6 +22,6 @@ const tree = new merkle.MerkleTree(aimList);
 
 console.log(tree.root);
 
-console.log(tree.getProof(aimList[1]))
+console.log(tree.getProof(aimList[0]))
 
 // console.log(merkle.proofMerklePath(tree.root, '1', tree.getProof('1')))
