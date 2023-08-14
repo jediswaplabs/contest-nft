@@ -45,7 +45,7 @@ fn URI() -> Span<felt252> {
 }
 
 fn OWNER() -> ContractAddress {
-    return starknet::contract_address_const::<0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974>();
+    return starknet::contract_address_const::<0x35742331cbd91fc4873c469ba52939db909efcf46b9c28e82d1baaa7078a6d6>();
 }
 
 fn setup_dispatcher(uri: Span<felt252>) -> ContractAddress {
@@ -76,13 +76,15 @@ fn test_mint_whitelist_no_set_merkle_root() {
     let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
-    let token_id = 1_u128;
+    // data of 10,1,L1PW,10,406872312314,0,76769,[0x66e7169b0731c8eb021cf5e09a803d62a66cc01cdb42bedfbea9de90858b9e4, 0xb0e5a3fb482c4fa849ccf1b5df658765fc4d7c5098fe3d8a2b43d0f1af6edd, 0x923dca6d5438f31c9e1cc1b2cd08a5aebf79842a382cabb76ae4ed832d97be, 0x4081183b5464d63894bbd8769e6ffef977fe9669469d0e2a0e6b4d2d8298f36, 0x6cdf09187175a80b6cc4ad8dad44af7d65d5b22f51d3dd742a9bf2ce85d455b, 0x5b6eba0c456c58833fcb4be518d20dc6e2dc29079e2b61a5b1e10cbf9e46bfc, 0x25c2ab011f0339dfa5c810b6cd6daff0ccd78afc88758da6af890db7dd2f0aa, 0x7ff636821e88f5f9943a306579f7c5ea202402155ad89d9e8fc542eab34619f, 0x45c13f5d5211898c9bd9b5560a4d76a6ce7c36804e2eac3f8baa1197e7b12e7, 0xb37a422d6d1694a629eaf08ec7d81ee2c009655cae64000bf1ccf8261422f0, 0x4c5a9d1aeb7a93407504beec91e7256bbb8fa071bac32bc69bce019d471483e, 0x36bae232461bfecb202be7906fe406b7baaeae4ca4150cbb38d7c7a8adc2070, 0x30a1705efb2527295d44157202795133ba729dfb3e16ce9a63b0ecf90433e0b, 0x124bcbc7f61601e434e5fc5181982f9cc9441d77f9da68ac3bd5a17ecf0ce26, 0x4243240599db68c30370219713a8f9b0f3c978856082a0c6f20aa945ff9cf, 0x5561116dfd3500403473bcff6d291debdcc45b72ad44c4491a1e1b75b8c4e7f, 0x7b4427387cb6c04cdcb0f348186bd35ee678cd4b20598e66ecb73a5e906e1a5]
+
+    let token_id = 10_u128;
     let task_id = 1_u128;
-    let name = 'L1P1';
+    let name = 'L1PW';
     let rank = 10;
-    let score = 12000;
-    let level = 6;
-    let total_eligible_users = 120000;
+    let score = 406872312314;
+    let level = 0;
+    let total_eligible_users = 76769;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -92,9 +94,25 @@ fn test_mint_whitelist_no_set_merkle_root() {
         total_eligible_users: total_eligible_users,
     };
     let mut proof = ArrayTrait::new();
-    proof.append(0x620d10f8d919582737f7adbf5458f33e3984f1036bf12f26df45b0b7a6de008);
-    proof.append(0xbd3de79dffabeaa861d6f52c917693f5673041df2004b245ace343a5c2cfb);
-    proof.append(0x5d32dd94548b77404420815161d866380fcdac237adea94f114dadb3e793b7d);
+    proof.append(0x66e7169b0731c8eb021cf5e09a803d62a66cc01cdb42bedfbea9de90858b9e4);
+    proof.append(0xb0e5a3fb482c4fa849ccf1b5df658765fc4d7c5098fe3d8a2b43d0f1af6edd);
+    proof.append(0x923dca6d5438f31c9e1cc1b2cd08a5aebf79842a382cabb76ae4ed832d97be);
+    proof.append(0x4081183b5464d63894bbd8769e6ffef977fe9669469d0e2a0e6b4d2d8298f36);
+    proof.append(0x6cdf09187175a80b6cc4ad8dad44af7d65d5b22f51d3dd742a9bf2ce85d455b);
+    proof.append(0x5b6eba0c456c58833fcb4be518d20dc6e2dc29079e2b61a5b1e10cbf9e46bfc);
+    proof.append(0x25c2ab011f0339dfa5c810b6cd6daff0ccd78afc88758da6af890db7dd2f0aa);
+    proof.append(0x7ff636821e88f5f9943a306579f7c5ea202402155ad89d9e8fc542eab34619f);
+    proof.append(0x45c13f5d5211898c9bd9b5560a4d76a6ce7c36804e2eac3f8baa1197e7b12e7);
+    proof.append(0xb37a422d6d1694a629eaf08ec7d81ee2c009655cae64000bf1ccf8261422f0);
+    proof.append(0x4c5a9d1aeb7a93407504beec91e7256bbb8fa071bac32bc69bce019d471483e);
+    proof.append(0x36bae232461bfecb202be7906fe406b7baaeae4ca4150cbb38d7c7a8adc2070);
+    proof.append(0x30a1705efb2527295d44157202795133ba729dfb3e16ce9a63b0ecf90433e0b);
+    proof.append(0x124bcbc7f61601e434e5fc5181982f9cc9441d77f9da68ac3bd5a17ecf0ce26);
+    proof.append(0x4243240599db68c30370219713a8f9b0f3c978856082a0c6f20aa945ff9cf);
+    proof.append(0x5561116dfd3500403473bcff6d291debdcc45b72ad44c4491a1e1b75b8c4e7f);
+    proof.append(0x7b4427387cb6c04cdcb0f348186bd35ee678cd4b20598e66ecb73a5e906e1a5);
+
+
     jedi_nft.mint_whitelist(token_id.into(), proof, token_metadata);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
@@ -110,13 +128,13 @@ fn test_mint_whitelist() {
     let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
-    let token_id = 1_u128;
+    let token_id = 10_u128;
     let task_id = 1_u128;
-    let name = 'L1P1';
+    let name = 'L1PW';
     let rank = 10;
-    let score = 12000;
-    let level = 6;
-    let total_eligible_users = 120000;
+    let score = 406872312314;
+    let level = 0;
+    let total_eligible_users = 76769;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -126,11 +144,26 @@ fn test_mint_whitelist() {
         total_eligible_users: total_eligible_users,
     };
     jedi_nft
-        .set_merkle_root(task_id, 0x3c56807fbf1611f214a1693ee0de0d40134a4cc0eea9440eb9216d49fbb13e9);
+        .set_merkle_root(task_id, 0x364416474922e527188122afdfa40a0eb0ed046369ce6a2365dac91113fbee0);
     let mut proof = ArrayTrait::new();
-    proof.append(0x620d10f8d919582737f7adbf5458f33e3984f1036bf12f26df45b0b7a6de008);
-    proof.append(0xbd3de79dffabeaa861d6f52c917693f5673041df2004b245ace343a5c2cfb);
-    proof.append(0x5d32dd94548b77404420815161d866380fcdac237adea94f114dadb3e793b7d);
+    proof.append(0x66e7169b0731c8eb021cf5e09a803d62a66cc01cdb42bedfbea9de90858b9e4);
+    proof.append(0xb0e5a3fb482c4fa849ccf1b5df658765fc4d7c5098fe3d8a2b43d0f1af6edd);
+    proof.append(0x923dca6d5438f31c9e1cc1b2cd08a5aebf79842a382cabb76ae4ed832d97be);
+    proof.append(0x4081183b5464d63894bbd8769e6ffef977fe9669469d0e2a0e6b4d2d8298f36);
+    proof.append(0x6cdf09187175a80b6cc4ad8dad44af7d65d5b22f51d3dd742a9bf2ce85d455b);
+    proof.append(0x5b6eba0c456c58833fcb4be518d20dc6e2dc29079e2b61a5b1e10cbf9e46bfc);
+    proof.append(0x25c2ab011f0339dfa5c810b6cd6daff0ccd78afc88758da6af890db7dd2f0aa);
+    proof.append(0x7ff636821e88f5f9943a306579f7c5ea202402155ad89d9e8fc542eab34619f);
+    proof.append(0x45c13f5d5211898c9bd9b5560a4d76a6ce7c36804e2eac3f8baa1197e7b12e7);
+    proof.append(0xb37a422d6d1694a629eaf08ec7d81ee2c009655cae64000bf1ccf8261422f0);
+    proof.append(0x4c5a9d1aeb7a93407504beec91e7256bbb8fa071bac32bc69bce019d471483e);
+    proof.append(0x36bae232461bfecb202be7906fe406b7baaeae4ca4150cbb38d7c7a8adc2070);
+    proof.append(0x30a1705efb2527295d44157202795133ba729dfb3e16ce9a63b0ecf90433e0b);
+    proof.append(0x124bcbc7f61601e434e5fc5181982f9cc9441d77f9da68ac3bd5a17ecf0ce26);
+    proof.append(0x4243240599db68c30370219713a8f9b0f3c978856082a0c6f20aa945ff9cf);
+    proof.append(0x5561116dfd3500403473bcff6d291debdcc45b72ad44c4491a1e1b75b8c4e7f);
+    proof.append(0x7b4427387cb6c04cdcb0f348186bd35ee678cd4b20598e66ecb73a5e906e1a5);
+
     jedi_nft.mint_whitelist(token_id.into(), proof, token_metadata);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
@@ -147,13 +180,13 @@ fn test_mint_whitelist_already_mint() {
     let mut erc721 = ERC721ABIDispatcher { contract_address: jedi_contract_address };
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
-    let token_id = 1_u128;
+    let token_id = 10_u128;
     let task_id = 1_u128;
-    let name = 'L1P1';
+    let name = 'L1PW';
     let rank = 10;
-    let score = 12000;
-    let level = 6;
-    let total_eligible_users = 120000;
+    let score = 406872312314;
+    let level = 0;
+    let total_eligible_users = 76769;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -163,11 +196,25 @@ fn test_mint_whitelist_already_mint() {
         total_eligible_users: total_eligible_users,
     };
     jedi_nft
-        .set_merkle_root(task_id, 0x3c56807fbf1611f214a1693ee0de0d40134a4cc0eea9440eb9216d49fbb13e9);
+        .set_merkle_root(task_id, 0x364416474922e527188122afdfa40a0eb0ed046369ce6a2365dac91113fbee0);
     let mut proof = ArrayTrait::new();
-    proof.append(0x4a9c765a45a96a8ddc6afb1a8d086d14dd5c3a54ccbeea049969101ebe59ad1);
-    proof.append(0x63edeac7f0773edfa49f70380c79c18c72fc065a398b813c4c658812c16b3c6);
-    proof.append(0x2df262d0827ea289ff0ae82047e8c99bc35d7e3deb383b8b28bae51f38efec3);
+    proof.append(0x66e7169b0731c8eb021cf5e09a803d62a66cc01cdb42bedfbea9de90858b9e4);
+    proof.append(0xb0e5a3fb482c4fa849ccf1b5df658765fc4d7c5098fe3d8a2b43d0f1af6edd);
+    proof.append(0x923dca6d5438f31c9e1cc1b2cd08a5aebf79842a382cabb76ae4ed832d97be);
+    proof.append(0x4081183b5464d63894bbd8769e6ffef977fe9669469d0e2a0e6b4d2d8298f36);
+    proof.append(0x6cdf09187175a80b6cc4ad8dad44af7d65d5b22f51d3dd742a9bf2ce85d455b);
+    proof.append(0x5b6eba0c456c58833fcb4be518d20dc6e2dc29079e2b61a5b1e10cbf9e46bfc);
+    proof.append(0x25c2ab011f0339dfa5c810b6cd6daff0ccd78afc88758da6af890db7dd2f0aa);
+    proof.append(0x7ff636821e88f5f9943a306579f7c5ea202402155ad89d9e8fc542eab34619f);
+    proof.append(0x45c13f5d5211898c9bd9b5560a4d76a6ce7c36804e2eac3f8baa1197e7b12e7);
+    proof.append(0xb37a422d6d1694a629eaf08ec7d81ee2c009655cae64000bf1ccf8261422f0);
+    proof.append(0x4c5a9d1aeb7a93407504beec91e7256bbb8fa071bac32bc69bce019d471483e);
+    proof.append(0x36bae232461bfecb202be7906fe406b7baaeae4ca4150cbb38d7c7a8adc2070);
+    proof.append(0x30a1705efb2527295d44157202795133ba729dfb3e16ce9a63b0ecf90433e0b);
+    proof.append(0x124bcbc7f61601e434e5fc5181982f9cc9441d77f9da68ac3bd5a17ecf0ce26);
+    proof.append(0x4243240599db68c30370219713a8f9b0f3c978856082a0c6f20aa945ff9cf);
+    proof.append(0x5561116dfd3500403473bcff6d291debdcc45b72ad44c4491a1e1b75b8c4e7f);
+    proof.append(0x7b4427387cb6c04cdcb0f348186bd35ee678cd4b20598e66ecb73a5e906e1a5);
     jedi_nft.mint_whitelist(token_id.into(), proof.clone(), token_metadata);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
@@ -187,13 +234,13 @@ fn test_mint_sig() {
 
     jedi_nft
         .set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
-    let token_id = 1_u128;
+    let token_id = 10_u128;
     let task_id = 1_u128;
-    let name = 'L1P1';
+    let name = 'L1PW';
     let rank = 10;
-    let score = 12000;
-    let level = 6;
-    let total_eligible_users = 120000;
+    let score = 406872312314;
+    let level = 0;
+    let total_eligible_users = 76769;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -204,8 +251,8 @@ fn test_mint_sig() {
     };
 
     let mut sig = ArrayTrait::new();
-    sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
-    sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
+    sig.append(0x107d74eef104e85493aaef56a0a40c315e1ffc383ce67c26490880e170969b7);
+    sig.append(0x5f09812077d2578a3609edf7fc914a1c1ea62848193bff4382b06c7360662e);
     jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
 }
 
@@ -223,13 +270,13 @@ fn test_mint_sig_already_mint() {
 
     jedi_nft
         .set_mint_sig_pub_key(0x33f45f07e1bd1a51b45fc24ec8c8c9908db9e42191be9e169bfcac0c0d99745);
-    let token_id = 1_u128;
+    let token_id = 10_u128;
     let task_id = 1_u128;
-    let name = 'L1P1';
+    let name = 'L1PW';
     let rank = 10;
-    let score = 12000;
-    let level = 6;
-    let total_eligible_users = 120000;
+    let score = 406872312314;
+    let level = 0;
+    let total_eligible_users = 76769;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -240,8 +287,8 @@ fn test_mint_sig_already_mint() {
     };
 
     let mut sig = ArrayTrait::new();
-    sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
-    sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
+    sig.append(0x107d74eef104e85493aaef56a0a40c315e1ffc383ce67c26490880e170969b7);
+    sig.append(0x5f09812077d2578a3609edf7fc914a1c1ea62848193bff4382b06c7360662e);
     jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
 
     jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
@@ -259,13 +306,13 @@ fn test_mint_sig_not_set_pubkey() {
 
     assert(erc721.name() == 'Jedi NFT', 'name failed');
 
-    let token_id = 1_u128;
+    let token_id = 10_u128;
     let task_id = 1_u128;
-    let name = 'L1P1';
+    let name = 'L1PW';
     let rank = 10;
-    let score = 12000;
-    let level = 6;
-    let total_eligible_users = 120000;
+    let score = 406872312314;
+    let level = 0;
+    let total_eligible_users = 76769;
     let token_metadata = TokenMetadata {
         task_id: task_id,
         name: name,
@@ -276,7 +323,7 @@ fn test_mint_sig_not_set_pubkey() {
     };
 
     let mut sig = ArrayTrait::new();
-    sig.append(0x3f65e72fe5b1f54277ecf22f54ecf69132700bf41f6918457457d5deab6577c);
-    sig.append(0x672cc7e8839ce82b6887dd64df8f486a228fe418a5b4eaeab50dd588ce5a94c);
+    sig.append(0x107d74eef104e85493aaef56a0a40c315e1ffc383ce67c26490880e170969b7);
+    sig.append(0x5f09812077d2578a3609edf7fc914a1c1ea62848193bff4382b06c7360662e);
     jedi_nft.mint_sig(token_id, sig.span(), token_metadata);
 }
