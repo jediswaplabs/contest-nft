@@ -53,6 +53,7 @@ mod JediNFT {
     use array::{SpanSerde, ArrayTrait};
     use clone::Clone;
     use array::SpanTrait;
+    use box::BoxTrait;
     use ecdsa::check_ecdsa_signature;
     use hash::LegacyHash;
     use zeroable::Zeroable;
@@ -399,13 +400,22 @@ mod JediNFT {
         fn append_number_ascii(mut uri: Array<felt252>, mut number_in: u256) -> Array<felt252> {
             // TODO: replace with u256 divide once it's implemented on network
             let mut number: u128 = number_in.try_into().unwrap();
+            let mut tmpArray: Array<felt252> = ArrayTrait::new();
             loop {
                 if number == 0 {
                     break;
                 }
                 let digit: u128 = number % 10;
                 number /= 10;
-                uri.append(digit.into() + 48);
+                tmpArray.append(digit.into() + 48);
+            };
+            let mut i: u32 = tmpArray.len();
+            loop {
+                if i == 0 {
+                    break;
+                }
+                i -= 1;
+                uri.append(*tmpArray.get(i.into()).unwrap().unbox());
             };
             return uri;
         }
