@@ -143,7 +143,9 @@ mod JediNFT {
         fn tokenURI(self: @ContractState, token_id: u256) -> Span<felt252> {
             let base_uri = self._uri.read();
             let new_base_uri: Array<felt252> = base_uri.snapshot.clone();
-            return InternalTrait::append_number_ascii(new_base_uri, token_id).span();
+            let mut tmp =  InternalTrait::append_number_ascii(new_base_uri, token_id);
+            tmp.append('.json');
+            return tmp.span();
         }
 
         fn contractURI(self: @ContractState) -> Span<felt252> {
