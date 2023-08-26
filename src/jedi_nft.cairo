@@ -410,6 +410,9 @@ mod JediNFT {
                 tmpArray.append(digit.into() + 48);
             };
             let mut i: u32 = tmpArray.len();
+            if i == 0 { // deal with 0 case
+                uri.append(48);
+            }
             loop {
                 if i == 0 {
                     break;
