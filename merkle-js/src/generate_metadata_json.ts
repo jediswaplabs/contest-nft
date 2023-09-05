@@ -64,7 +64,7 @@ for (let i = 0; i < list.length; i++) {
             }
         ]
     };
-    fs.writeFileSync(dir_prefix + fileName, JSON.stringify(data));
+    fs.writeFileSync(dir_prefix + fileName + '.json', JSON.stringify(data));
 }
 
 // // write to file for each map item, and file name is the last digit
