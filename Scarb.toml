@@ -14,9 +14,10 @@ alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.g
 
 
 [dependencies]
-starknet = ">=2.1.0"
+starknet = ">=2.2.0"
 alexandria_math = { git = "https://github.com/keep-starknet-strange/alexandria.git" }
-rules_erc721 = { git = "https://github.com/ruleslabs/starknet-erc721.git" }
+# rules_erc721 = { git = "https://github.com/ruleslabs/starknet-erc721.git" }
+openzeppelin = { git = "https://github.com/OpenZeppelin/cairo-contracts.git", tag = "v0.7.0" }
 
 [[target.starknet-contract]]
 sierra = true

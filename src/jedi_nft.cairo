@@ -57,22 +57,23 @@ mod JediNFT {
     use ecdsa::check_ecdsa_signature;
     use hash::LegacyHash;
     use zeroable::Zeroable;
-    use rules_erc721::erc721::erc721;
-    use rules_erc721::erc721::erc721::{ERC721, ERC721ABI, ERC721ABIDispatcher};
-    use rules_erc721::erc721::erc721::ERC721::{
-        InternalTrait as ERC721InternalTrait, ISRC5, ISRC5Camel
-    };
-    use rules_erc721::erc721::interface::{
-        IERC721, IERC721CamelOnly, IERC721Metadata, IERC721MetadataCamelOnly
-    };
+    use openzeppelin::token::erc721::ERC721;
+    // use rules_erc721::erc721::erc721::{ERC721, ERC721ABI, ERC721ABIDispatcher};
+    use openzeppelin::introspection::interface::ISRC5;
+    use openzeppelin::introspection::interface::ISRC5Camel;
+    // use rules_erc721::erc721::interface::{
+    //     IERC721, IERC721CamelOnly, IERC721Metadata, IERC721MetadataCamelOnly
+    // };
     use jedinft::access::ownable::{Ownable, IOwnable};
     use jedinft::access::ownable::Ownable::{
         ModifierTrait as OwnableModifierTrait, InternalTrait as OwnableInternalTrait,
     };
     use starknet::ContractAddress;
     use starknet::get_caller_address;
-    use alexandria_data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
-    use rules_utils::utils::storage::StoreSpanFelt252;
+    use alexandria_data_structures::merkle_tree::{
+        Hasher, MerkleTree, pedersen::PedersenHasherImpl, MerkleTreeTrait
+    };
+    // use rules_utils::utils::storage::StoreSpanFelt252;
     use super::TokenMetadata;
 
     #[storage]
@@ -144,7 +145,7 @@ mod JediNFT {
         fn tokenURI(self: @ContractState, token_id: u256) -> Span<felt252> {
             let base_uri = self._uri.read();
             let new_base_uri: Array<felt252> = base_uri.snapshot.clone();
-            let mut tmp =  InternalTrait::append_number_ascii(new_base_uri, token_id);
+            let mut tmp =  InternalImpl::append_number_ascii(new_base_uri, token_id);
             tmp.append('.json');
             return tmp.span();
         }
@@ -174,16 +175,16 @@ mod JediNFT {
         ) {
             let caller = get_caller_address();
             let merkle_root = self._merkle_roots.read(token_metadata.task_id);
-            assert(merkle_root != 0, 'merkle root not set');
+            assert(merkle_root != 0, "merkle root not set");
             let mut leaf: felt252 = LegacyHash::hash(caller.into(), token_id);
-            leaf = LegacyHash::hash(leaf, token_metadata.task_id);
-            leaf = LegacyHash::hash(leaf, token_metadata.name);
-            leaf = LegacyHash::hash(leaf, token_metadata.rank);
-            leaf = LegacyHash::hash(leaf, token_metadata.score);
-            leaf = LegacyHash::hash(leaf, token_metadata.level);
-            leaf = LegacyHash::hash(leaf, token_metadata.total_eligible_users);
-
-            let mut merkle_tree = MerkleTreeTrait::new();
+            // leaf = LegacyHash::hash(leaf, token_metadata.task_id);
+            // leaf = LegacyHash::hash(leaf, token_metadata.name);
+            // leaf = LegacyHash::hash(leaf, token_metadata.rank);
+            // leaf = LegacyHash::hash(leaf, token_metadata.score);
+            // leaf = LegacyHash::hash(leaf, token_metadata.level);
+            // leaf = LegacyHash::hash(leaf, token_metadata.total_eligible_users);
+            // let mut leaf: felt252 = merkle_tree.hasher.hash(caller.into(), token_id);
+            let mut merkle_tree: MerkleTree<Hasher> = MerkleTreeTrait::new();
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
             assert(result == true, 'verify failed');
 
