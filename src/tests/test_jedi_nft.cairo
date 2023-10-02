@@ -15,7 +15,11 @@ use starknet::class_hash::Felt252TryIntoClassHash;
 use traits::TryInto;
 
 use jedinft::jedi_nft::{IJediNFT, IJediNFTDispatcher, JediNFT, TokenMetadata};
-use rules_erc721::erc721::erc721::{ERC721ABI, ERC721ABIDispatcher, ERC721ABIDispatcherTrait};
+use openzeppelin::token::erc721::ERC721;
+use alexandria_data_structures::merkle_tree::{
+    Hasher, MerkleTree, pedersen::PedersenHasherImpl, MerkleTreeTrait, MerkleTreeImpl
+};
+// use rules_erc721::erc721::erc721::{ERC721ABI, ERC721ABIDispatcher, ERC721ABIDispatcherTrait};
 use alexandria_data_structures::merkle_tree::{MerkleTree, MerkleTreeTrait};
 use hash::LegacyHash;
 

@@ -55,7 +55,6 @@ mod JediNFT {
     use array::SpanTrait;
     use box::BoxTrait;
     use ecdsa::check_ecdsa_signature;
-    use hash::LegacyHash;
     use zeroable::Zeroable;
     use openzeppelin::token::erc721::ERC721;
     use openzeppelin::token::erc721::ERC721::InternalTrait as ERC721InternalTrait;
@@ -223,13 +222,15 @@ mod JediNFT {
             let mint_sig_public_key = self._mint_sig_public_key.read();
             assert(mint_sig_public_key != 0, 'MINT_SIG_PUBLIC_KEY_NOT_SET');
             let caller = get_caller_address();
-            let mut hashed = LegacyHash::hash(caller.into(), token_id);
-            hashed = LegacyHash::hash(hashed, token_metadata.task_id);
-            hashed = LegacyHash::hash(hashed, token_metadata.name);
-            hashed = LegacyHash::hash(hashed, token_metadata.rank);
-            hashed = LegacyHash::hash(hashed, token_metadata.score);
-            hashed = LegacyHash::hash(hashed, token_metadata.level);
-            hashed = LegacyHash::hash(hashed, token_metadata.total_eligible_users);
+            let mut merkle_tree: MerkleTree<Hasher> = MerkleTreeTrait::new();
+
+            let mut hashed: felt252 = merkle_tree.hasher.hash(caller.into(), token_id.into());
+            hashed = merkle_tree.hasher.hash(hashed, token_metadata.task_id.into());
+            hashed = merkle_tree.hasher.hash(hashed, token_metadata.name.into());
+            hashed = merkle_tree.hasher.hash(hashed, token_metadata.rank.into());
+            hashed = merkle_tree.hasher.hash(hashed, token_metadata.score.into());
+            hashed = merkle_tree.hasher.hash(hashed, token_metadata.level.into());
+            hashed = merkle_tree.hasher.hash(hashed, token_metadata.total_eligible_users.into());
             assert(signature.len() == 2_u32, 'INVALID_SIGNATURE_LENGTH');
             assert(
                 check_ecdsa_signature(
