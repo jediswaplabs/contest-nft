@@ -1,4 +1,3 @@
-use core::clone::Clone;
 use core::traits::TryInto;
 use array::ArrayTrait;
 use starknet::{Store, ContractAddress};
