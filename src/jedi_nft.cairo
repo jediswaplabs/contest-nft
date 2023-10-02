@@ -58,12 +58,12 @@ mod JediNFT {
     use hash::LegacyHash;
     use zeroable::Zeroable;
     use openzeppelin::token::erc721::ERC721;
-    // use rules_erc721::erc721::erc721::{ERC721, ERC721ABI, ERC721ABIDispatcher};
+    use openzeppelin::token::erc721::ERC721::InternalTrait as ERC721InternalTrait;
     use openzeppelin::introspection::interface::ISRC5;
     use openzeppelin::introspection::interface::ISRC5Camel;
-    // use rules_erc721::erc721::interface::{
-    //     IERC721, IERC721CamelOnly, IERC721Metadata, IERC721MetadataCamelOnly
-    // };
+    use openzeppelin::token::erc721::interface::{
+        IERC721, IERC721CamelOnly, IERC721Metadata, IERC721MetadataCamelOnly
+    };
     use jedinft::access::ownable::{Ownable, IOwnable};
     use jedinft::access::ownable::Ownable::{
         ModifierTrait as OwnableModifierTrait, InternalTrait as OwnableInternalTrait,
@@ -71,9 +71,9 @@ mod JediNFT {
     use starknet::ContractAddress;
     use starknet::get_caller_address;
     use alexandria_data_structures::merkle_tree::{
-        Hasher, MerkleTree, pedersen::PedersenHasherImpl, MerkleTreeTrait
+        Hasher, MerkleTree, pedersen::PedersenHasherImpl, MerkleTreeTrait, MerkleTreeImpl
     };
-    // use rules_utils::utils::storage::StoreSpanFelt252;
+    use jedinft::storage::StoreSpanFelt252;
     use super::TokenMetadata;
 
     #[storage]
@@ -132,7 +132,7 @@ mod JediNFT {
         self._uri.write(uri_);
         let mut erc721_self = ERC721::unsafe_new_contract_state();
         // ERC721 init
-        erc721_self.initializer(:name_, :symbol_);
+        erc721_self.initializer(name:name_, symbol:symbol_);
         self._contract_uri.write(contract_uri);
 
         let mut ownable_self = Ownable::unsafe_new_contract_state();
@@ -175,16 +175,16 @@ mod JediNFT {
         ) {
             let caller = get_caller_address();
             let merkle_root = self._merkle_roots.read(token_metadata.task_id);
-            assert(merkle_root != 0, "merkle root not set");
-            let mut leaf: felt252 = LegacyHash::hash(caller.into(), token_id);
-            // leaf = LegacyHash::hash(leaf, token_metadata.task_id);
-            // leaf = LegacyHash::hash(leaf, token_metadata.name);
-            // leaf = LegacyHash::hash(leaf, token_metadata.rank);
-            // leaf = LegacyHash::hash(leaf, token_metadata.score);
-            // leaf = LegacyHash::hash(leaf, token_metadata.level);
-            // leaf = LegacyHash::hash(leaf, token_metadata.total_eligible_users);
-            // let mut leaf: felt252 = merkle_tree.hasher.hash(caller.into(), token_id);
+            assert(merkle_root != 0, 'merkle root not set');
             let mut merkle_tree: MerkleTree<Hasher> = MerkleTreeTrait::new();
+            let mut leaf: felt252 = merkle_tree.hasher.hash(caller.into(), token_id.into());
+            leaf = merkle_tree.hasher.hash(leaf, token_metadata.task_id.into());
+            leaf = merkle_tree.hasher.hash(leaf, token_metadata.name.into());
+            leaf = merkle_tree.hasher.hash(leaf, token_metadata.rank.into());
+            leaf = merkle_tree.hasher.hash(leaf, token_metadata.score.into());
+            leaf = merkle_tree.hasher.hash(leaf, token_metadata.level.into());
+            leaf = merkle_tree.hasher.hash(leaf, token_metadata.total_eligible_users.into());
+
             let result = merkle_tree.verify(merkle_root, leaf, proof.span());
             assert(result == true, 'verify failed');
 
@@ -388,12 +388,12 @@ mod JediNFT {
         }
     }
 
-    #[external(v0)]
-    impl IERC721MetadataCamelImpl of IERC721MetadataCamelOnly<ContractState> {
-        fn tokenUri(self: @ContractState, tokenId: u256) -> felt252 {
-            IERC721Metadata::token_uri(self, token_id: tokenId)
-        }
-    }
+    // #[external(v0)]
+    // impl IERC721MetadataCamelImpl of IERC721MetadataCamelOnly<ContractState> {
+    //     fn tokenUri(self: @ContractState, tokenId: u256) -> felt252 {
+    //         IERC721Metadata::token_uri(self, token_id: tokenId)
+    //     }
+    // }
 
 
     #[generate_trait]
