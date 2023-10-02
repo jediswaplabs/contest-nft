@@ -1,0 +1,21 @@
+{
+  "name": "contest-nft-example",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "starknet": "^5.14.1",
+    "typescript": "^4.6.4",
+    "micro-starknet": "~0.2.1"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.31",
+    "ts-node": "^10.8.0"
+  }
+}
