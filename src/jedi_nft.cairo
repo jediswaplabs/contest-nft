@@ -135,7 +135,7 @@ mod JediNFT {
         self._uri.write(uri_);
         let mut erc721_self = ERC721::unsafe_new_contract_state();
         // ERC721 init
-        erc721_self.initializer(name:name_, symbol:symbol_);
+        erc721_self.initializer(name: name_, symbol: symbol_);
         self._contract_uri.write(contract_uri);
 
         let mut ownable_self = Ownable::unsafe_new_contract_state();
@@ -148,7 +148,7 @@ mod JediNFT {
         fn tokenURI(self: @ContractState, token_id: u256) -> Span<felt252> {
             let base_uri = self._uri.read();
             let new_base_uri: Array<felt252> = base_uri.snapshot.clone();
-            let mut tmp =  InternalImpl::append_number_ascii(new_base_uri, token_id);
+            let mut tmp = InternalImpl::append_number_ascii(new_base_uri, token_id);
             tmp.append('.json');
             return tmp.span();
         }
@@ -319,16 +319,13 @@ mod JediNFT {
     #[external(v0)]
     impl ISRC5Impl of ISRC5<ContractState> {
         fn supports_interface(self: @ContractState, interface_id: felt252) -> bool {
-            if (
-                (interface_id == IERC721_ID_LEGACY) |
-                (interface_id == IERC721_METADATA_ID_LEGACY)
-            ) {
+            if ((interface_id == IERC721_ID_LEGACY)
+                | (interface_id == IERC721_METADATA_ID_LEGACY)) {
                 true
             } else {
                 let mut erc721_self = ERC721::unsafe_new_contract_state();
                 erc721_self.supports_interface(:interface_id)
             }
-            
         }
     }
 
@@ -408,7 +405,6 @@ mod JediNFT {
     //     }
     // }
 
-
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         fn append_number_ascii(mut uri: Array<felt252>, mut number_in: u256) -> Array<felt252> {
@@ -436,25 +432,25 @@ mod JediNFT {
             };
             return uri;
         }
-        // fn _check_on_erc721_received(
-        //     self: @ContractState,
-        //     from: starknet::ContractAddress,
-        //     to: starknet::ContractAddress,
-        //     token_id: u256,
-        //     data: Span<felt252>
-        // ) -> bool {
-        //     let SRC5 = DualCaseSRC5 { contract_address: to };
+    // fn _check_on_erc721_received(
+    //     self: @ContractState,
+    //     from: starknet::ContractAddress,
+    //     to: starknet::ContractAddress,
+    //     token_id: u256,
+    //     data: Span<felt252>
+    // ) -> bool {
+    //     let SRC5 = DualCaseSRC5 { contract_address: to };
 
-        //     if (SRC5.supports_interface(IERC721_RECEIVER_ID_LEGACY)) {
-        //         let ERC721Receiver = DualCaseERC721Receiver { contract_address: to };
+    //     if (SRC5.supports_interface(IERC721_RECEIVER_ID_LEGACY)) {
+    //         let ERC721Receiver = DualCaseERC721Receiver { contract_address: to };
 
-        //         let caller = starknet::get_caller_address();
+    //         let caller = starknet::get_caller_address();
 
-        //         ERC721Receiver.on_erc721_received(operator: caller, :from, :token_id, :data) == IERC721_RECEIVER_ID_LEGACY
-        //     } else {
-        //         SRC5.supports_interface(0x150b7a02)
-        //     }
-        // }
+    //         ERC721Receiver.on_erc721_received(operator: caller, :from, :token_id, :data) == IERC721_RECEIVER_ID_LEGACY
+    //     } else {
+    //         SRC5.supports_interface(0x150b7a02)
+    //     }
+    // }
     }
 
     #[generate_trait]

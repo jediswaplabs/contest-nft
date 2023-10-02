@@ -21,7 +21,8 @@ use alexandria_data_structures::merkle_tree::{
 };
 // use rules_erc721::erc721::erc721::{ERC721ABI, ERC721ABIDispatcher, ERC721ABIDispatcherTrait};
 use openzeppelin::token::erc721::interface::{
-    IERC721, IERC721CamelOnly, IERC721Metadata, IERC721MetadataCamelOnly, IERC721Dispatcher, IERC721DispatcherTrait
+    IERC721, IERC721CamelOnly, IERC721Metadata, IERC721MetadataCamelOnly, IERC721Dispatcher,
+    IERC721DispatcherTrait
 };
 use hash::LegacyHash;
 
@@ -73,7 +74,7 @@ fn setup_dispatcher(uri: Span<felt252>) -> ContractAddress {
 
 #[test]
 #[available_gas(20000000)]
-#[should_panic(expected: ('merkle root not set', 'ENTRYPOINT_FAILED', ))]
+#[should_panic(expected: ('merkle root not set', 'ENTRYPOINT_FAILED',))]
 fn test_mint_whitelist_no_set_merkle_root() {
     let caller = OWNER();
     starknet::testing::set_contract_address(caller);
@@ -118,7 +119,6 @@ fn test_mint_whitelist_no_set_merkle_root() {
     proof.append(0x5561116dfd3500403473bcff6d291debdcc45b72ad44c4491a1e1b75b8c4e7f);
     proof.append(0x7b4427387cb6c04cdcb0f348186bd35ee678cd4b20598e66ecb73a5e906e1a5);
 
-
     jedi_nft.mint_whitelist(token_id.into(), proof, token_metadata);
     assert(erc721.owner_of(token_id.into()) == caller, 'owner_of failed');
     assert(jedi_nft.is_completed(task_id, caller) == true, 'is_minted failed');
@@ -150,7 +150,9 @@ fn test_mint_whitelist() {
         total_eligible_users: total_eligible_users,
     };
     jedi_nft
-        .set_merkle_root(task_id, 0x364416474922e527188122afdfa40a0eb0ed046369ce6a2365dac91113fbee0);
+        .set_merkle_root(
+            task_id, 0x364416474922e527188122afdfa40a0eb0ed046369ce6a2365dac91113fbee0
+        );
     let mut proof = ArrayTrait::new();
     proof.append(0x66e7169b0731c8eb021cf5e09a803d62a66cc01cdb42bedfbea9de90858b9e4);
     proof.append(0xb0e5a3fb482c4fa849ccf1b5df658765fc4d7c5098fe3d8a2b43d0f1af6edd);
@@ -176,7 +178,7 @@ fn test_mint_whitelist() {
 }
 
 #[test]
-#[should_panic(expected: ('ALREADY_MINTED', 'ENTRYPOINT_FAILED', ))]
+#[should_panic(expected: ('ALREADY_MINTED', 'ENTRYPOINT_FAILED',))]
 #[available_gas(20000000)]
 fn test_mint_whitelist_already_mint() {
     let caller = OWNER();
@@ -202,7 +204,9 @@ fn test_mint_whitelist_already_mint() {
         total_eligible_users: total_eligible_users,
     };
     jedi_nft
-        .set_merkle_root(task_id, 0x364416474922e527188122afdfa40a0eb0ed046369ce6a2365dac91113fbee0);
+        .set_merkle_root(
+            task_id, 0x364416474922e527188122afdfa40a0eb0ed046369ce6a2365dac91113fbee0
+        );
     let mut proof = ArrayTrait::new();
     proof.append(0x66e7169b0731c8eb021cf5e09a803d62a66cc01cdb42bedfbea9de90858b9e4);
     proof.append(0xb0e5a3fb482c4fa849ccf1b5df658765fc4d7c5098fe3d8a2b43d0f1af6edd);
@@ -263,7 +267,7 @@ fn test_mint_sig() {
 }
 
 #[test]
-#[should_panic(expected: ('ALREADY_MINTED', 'ENTRYPOINT_FAILED', ))]
+#[should_panic(expected: ('ALREADY_MINTED', 'ENTRYPOINT_FAILED',))]
 #[available_gas(20000000)]
 fn test_mint_sig_already_mint() {
     let caller = OWNER();
@@ -301,7 +305,7 @@ fn test_mint_sig_already_mint() {
 }
 
 #[test]
-#[should_panic(expected: ('MINT_SIG_PUBLIC_KEY_NOT_SET', 'ENTRYPOINT_FAILED', ))]
+#[should_panic(expected: ('MINT_SIG_PUBLIC_KEY_NOT_SET', 'ENTRYPOINT_FAILED',))]
 #[available_gas(20000000)]
 fn test_mint_sig_not_set_pubkey() {
     let caller = OWNER();
