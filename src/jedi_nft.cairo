@@ -305,8 +305,7 @@ mod JediNFT {
         ) {
             let mut erc721_self = ERC721::unsafe_new_contract_state();
 
-            erc721_self.transfer_from(:from, :to, :token_id);
-            // assert(self._check_on_erc721_received(:from, :to, :token_id, :data), 'ERC721: safe transfer failed');
+            erc721_self.safe_transfer_from(:from, :to, :token_id, :data);
         }
 
         fn set_approval_for_all(
