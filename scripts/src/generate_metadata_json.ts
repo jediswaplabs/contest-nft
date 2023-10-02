@@ -2,10 +2,20 @@ import { merkle, num,cairo } from 'starknet';
 import * as starkCurve from 'micro-starknet';
 import * as fs from 'fs';
 
-// read data from .csv file
-// array of  [address, token_id, task_id, name, rank, score, level, total_eligible_users, proof]
 type Data = [string, number, number, string, number, number, number, number, string[]];
-let list = fs.readFileSync('/home/felix/Downloads/median/output10_proof.txt', 'utf8').split('\n').map(line => {
+
+
+// some prefix and suffix: change to your own config
+let dir_prefix = '/home/felix/Downloads/median/ipfs-json/';
+let cid_prefix = 'https://static.missions.jediswap.xyz/static-nft/high-definition/';
+let cid_suffix = '.png';
+let anmation_url_prefix = 'https://static.missions.jediswap.xyz/3d-animated-nft/';
+let animation_url_suffix = '.mp4';
+
+// read list from file,
+// file format: address, token_id, task_id, name, rank, score, level, total_eligible_users, proof
+// notice: replace the file path to your own file path
+let list = fs.readFileSync('./example/example.txt', 'utf8').split('\n').map(line => {
     if (line === '') {
         return null;
     }
@@ -20,13 +30,6 @@ let list = fs.readFileSync('/home/felix/Downloads/median/output10_proof.txt', 'u
     return data;
 });
 
-let dir_prefix = '/home/felix/Downloads/median/ipfs-json/';
-
-let cid_prefix = 'https://static.missions.jediswap.xyz/static-nft/high-definition/';
-let cid_suffix = '.png';
-
-let anmation_url_prefix = 'https://static.missions.jediswap.xyz/3d-animated-nft/';
-let animation_url_suffix = '.mp4';
 
 // make dir if not exist
 if (!fs.existsSync(dir_prefix)) {
@@ -66,17 +69,3 @@ for (let i = 0; i < list.length; i++) {
     };
     fs.writeFileSync(dir_prefix + fileName + '.json', JSON.stringify(data));
 }
-
-// // write to file for each map item, and file name is the last digit
-// for (let [key, value] of map) {
-//     let fileName = key + ".json";
-//     let data = {
-//         root: root,
-//         data: value
-//     };
-//     fs.writeFile(fileName, JSON.stringify(data), function (err) {
-//         if (err) {
-//             return console.error(err);
-//         }
-//     });
-// }

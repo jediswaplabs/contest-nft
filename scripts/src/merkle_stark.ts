@@ -1,9 +1,8 @@
 import { merkle, num,cairo } from 'starknet';
 import * as starkCurve from 'micro-starknet';
-import * as fs from 'fs';
 
-// read data from .csv file
-// array of  [address, token_id, task_id, name, rank, score, level, total_eligible_users]
+// notice: list is array of  [address, token_id, task_id, name, rank, score, level, total_eligible_users]
+// For example:
 let list = [['0x0138EfE7c064c69140e715f58d1e29FC75E5594D342E568246a4D6a3131a5974', 1, 1, 'L1P1', 10, 12000, 6, 120000],
 ['0x02b9cE3e6869192006820c2B41c084BAB97f17DAe966b981dCA2FDae1C178065', 2, 1, 'L1P2', 20, 11000, 6, 120000],
 ['0x0179B1211Aed20097bBbA0369088db3D30eCe0550015C08Ea7E521BBa99e76D2', 3, 1, 'L1P1', 320, 10000, 6, 120000],
