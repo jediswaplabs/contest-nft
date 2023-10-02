@@ -75,7 +75,6 @@ mod JediNFT {
     };
     use jedinft::storage::StoreSpanFelt252;
     use super::TokenMetadata;
-    use rules_utils::introspection::src5::SRC5;
 
     const IERC721_ID_LEGACY: felt252 = 0x80ac58cd;
     const IERC721_METADATA_ID_LEGACY: felt252 = 0x5b5e139f;
